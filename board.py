@@ -21,7 +21,7 @@ class Board:
     def __init__(self, N):
         self.size = N
         self.queens = []
-        self.nb_conflict = 0
+        self.nb_conflicts = 0
 
     def count_conflicts(self):
         conflicts = 0
@@ -29,9 +29,9 @@ class Board:
             for j in range(i):
                 if self.queens[i].attack(self.queens[j]):
                     conflicts += 1
-        self.nb_conflict = conflicts
+        self.nb_conflicts = conflicts
 
-    def put_random_queens(self):
+    def init_board(self):
         P = np.random.permutation(self.size)
         for i in range(len(P)):
             self.queens.append(Queen(i, P[i]))
@@ -62,7 +62,7 @@ class Board:
             print("╧═", end="")
         print("╝")
         self.count_conflicts()
-        print(f"Number of conflicts {self.nb_conflict}")
+        print(f"Number of conflicts {self.nb_conflicts}")
 
     def var_move(self, i, j):
         if i == j:
@@ -93,6 +93,6 @@ class Board:
         new_queen1 = Queen(self.queens[i].x, self.queens[j].y)
         new_queen2 = Queen(self.queens[j].x, self.queens[i].y)
         # update number of conflict
-        self.nb_conflict += self.var_move(i, j)
+        self.nb_conflicts += self.var_move(i, j)
         self.queens[i] = new_queen1
         self.queens[j] = new_queen2

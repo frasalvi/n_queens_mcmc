@@ -3,29 +3,42 @@ import math as m
 from board import Board
 
 
-def run_metropolis(N, MAX_MOVES, b):
-
-    beta = b
-
+def run_metropolis(
+    N, max_moves, beta_init, beta_strategy="fixed", strategy_params=None
+):
     board = Board(N)
-    board.put_random_queens()
-    if board.nb_conflict == 0:
+    board.init_board()
+
+    #  If the number of conflict is already 0, we're done.
+    if board.nb_conflicts == 0:
         board.print_board()
-        print(0)
-        return True, board.queens
+        return 0, board.queens
 
-    for j in range(MAX_MOVES):
+    beta = beta_init
+    for j in range(max_moves):
 
-        if j % 1000 == 0:
-            beta *= 2
-            print(j, m.exp(-1 * beta), board.nb_conflict)
+        # Update beta according to the strategy
+        if beta_strategy == "fixed":
+            pass
+        elif beta_strategy == "annealing_quantized":
+            if j % strategy_params["iterations_step"] == 0:
+                beta *= strategy_params["annealing_factor"]
+        else:
+            raise NotImplementedError("beta_strategy not implemented.")
 
+        # Debugging information
+        if j % 100 == 0:
+            print(f"Move {j} - beta: {beta} - nb_conflicts: {board.nb_conflicts}")
+
+        # Choose a random swap and compute the energy difference
         qn1 = np.random.randint(N)
-        qn2 = np.random.randint(N)
+        qn2 = qn1
+        while qn2 == qn1:
+            qn2 = np.random.randint(N)
         de = board.var_move(qn1, qn2)
 
-        # Metropolis algorithm. If de <= 0, accept the move.
-        # Otherwise, accept the move with probability given by e^(-dE/kT)
+        # Metropolis algorithm: If de <= 0, accept the move.
+        # Otherwise, accept the move with probability given by e^(-de * beta)
         # (so, bigger de => less likely to accept move).
         # If we accept the move, swap queens
         # and update the total system energy.
@@ -33,9 +46,8 @@ def run_metropolis(N, MAX_MOVES, b):
         if (de <= 0) or (p < m.exp(-de * beta)):
             board.move_queen(qn1, qn2)
             # If the number of conflict is 0, we're done.
-            if board.nb_conflict == 0:
+            if board.nb_conflicts == 0:
                 if board.size <= 100:
                     board.print_board()
-                print(j)
-                return True, board.queens
-    return False, board.queens
+                return j, board.queens
+    return -1, board.queens

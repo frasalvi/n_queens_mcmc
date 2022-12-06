@@ -1,14 +1,32 @@
-from metropolis import run_metropolis
+"""
+Run as:
+python main.py -n {YOUR_N} -beta {YOUR_BETA}
+"""
+
+import argparse
 from time import time
+from metropolis import run_metropolis
 
 
 if __name__ == "__main__":
-    N = 8
-    MAX_MOVES = 1000000
-    beta = 0.01
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", "--n", help="number of queens")
+    parser.add_argument("-beta", "--beta", help="initial beta")
+    args = parser.parse_args()
+    N = int(args.n) if args.n else 4
+    beta = float(args.beta) if args.beta else 0.01
+    max_moves = 1000000
 
-    b = time()
-    L = set()
-    for _ in range(10):
-        v, l_q = run_metropolis(N, MAX_MOVES, beta)
-    print(time() - b)
+    t = time()
+    iters, queens = run_metropolis(
+        N,
+        max_moves,
+        beta,
+        "annealing_quantized",
+        {"iterations_step": 1000, "annealing_factor": 2},
+    )
+
+    if iters == -1:
+        print(f"No solution found in {max_moves} moves.")
+    else:
+        print(f"Solution found in {iters} moves, {time() - t:e} seconds.")
