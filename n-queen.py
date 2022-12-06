@@ -4,7 +4,6 @@ from time import time
 
 
 class Queen:
-
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -45,7 +44,7 @@ class Board:
         for queen in self.queens:
             T[queen.x][queen.y] += 1
         print("╔═", end="")
-        for _ in range(self.size-1):
+        for _ in range(self.size - 1):
             print("╤═", end="")
         print("╗")
 
@@ -56,12 +55,12 @@ class Board:
             print("║")
             if i != self.size - 1:
                 print("╟─", end="")
-                for _ in range(self.size-1):
+                for _ in range(self.size - 1):
                     print("┼─", end="")
                 print("╢")
 
         print("╚═", end="")
-        for _ in range(self.size-1):
+        for _ in range(self.size - 1):
             print("╧═", end="")
         print("╝")
         self.count_conflicts()
@@ -132,12 +131,11 @@ def run(N, MAX_MOVES, b):
             board.move_queen(qn1, qn2)
             # If the number of conflict is 0, we're done.
             if board.nb_conflict == 0:
-                if board.size <= 100 :
+                if board.size <= 100:
                     board.print_board()
                 print(j)
                 return True, board.queens
     return False, board.queens
-
 
 
 N = 8
@@ -149,4 +147,3 @@ L = set()
 for _ in range(10):
     v, l_q = run(N, MAX_MOVES, beta)
 print(time() - b)
-
