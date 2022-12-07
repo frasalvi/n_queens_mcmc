@@ -4,14 +4,14 @@ from board import Board
 
 
 def run_metropolis(
-    N, max_moves, beta_init, beta_strategy="fixed", strategy_params=None
+    N, max_moves, beta_init, beta_strategy="fixed", strategy_params=None, debug=True
 ):
     board = Board(N)
     board.init_board()
 
     #  If the number of conflict is already 0, we're done.
     if board.nb_conflicts == 0:
-        board.print_board()
+        debug and board.print_board()
         return 0, board.queens
 
     beta = beta_init
@@ -27,7 +27,7 @@ def run_metropolis(
             raise NotImplementedError("beta_strategy not implemented.")
 
         # Debugging information
-        if j % 500 == 0:
+        if debug and j % 500 == 0:
             print(f"Move {j} - beta: {beta} - nb_conflicts: {board.nb_conflicts}")
 
         # Choose a random swap and compute the energy difference
@@ -47,7 +47,7 @@ def run_metropolis(
             board.move_queen(qn1, qn2)
             # If the number of conflict is 0, we're done.
             if board.nb_conflicts == 0:
-                if board.N <= 100:
+                if debug and board.N <= 100:
                     board.print_board()
                 return j, board.queens
     return -1, board.queens
