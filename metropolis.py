@@ -27,7 +27,7 @@ def run_metropolis(
             raise NotImplementedError("beta_strategy not implemented.")
 
         # Debugging information
-        if j % 100 == 0:
+        if j % 500 == 0:
             print(f"Move {j} - beta: {beta} - nb_conflicts: {board.nb_conflicts}")
 
         # Choose a random swap and compute the energy difference
@@ -35,7 +35,7 @@ def run_metropolis(
         qn2 = qn1
         while qn2 == qn1:
             qn2 = np.random.randint(N)
-        de = board.var_move(qn1, qn2)
+        de, _, _ = board.var_move(qn1, qn2)
 
         # Metropolis algorithm: If de <= 0, accept the move.
         # Otherwise, accept the move with probability given by e^(-de * beta)
@@ -47,7 +47,7 @@ def run_metropolis(
             board.move_queen(qn1, qn2)
             # If the number of conflict is 0, we're done.
             if board.nb_conflicts == 0:
-                if board.size <= 100:
+                if board.N <= 100:
                     board.print_board()
                 return j, board.queens
     return -1, board.queens
