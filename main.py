@@ -23,7 +23,7 @@ if __name__ == "__main__":
         max_moves,
         beta,
         mode="solve",
-        beta_strategy="fixed",
+        beta_strategy="annealing_quantized",
         strategy_params={"iterations_step": 1000, "annealing_factor": 2},
     )
 
