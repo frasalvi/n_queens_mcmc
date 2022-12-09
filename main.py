@@ -18,12 +18,13 @@ if __name__ == "__main__":
     max_moves = 1000000
 
     t = time()
-    iters, queens = run_metropolis(
+    iters, queens, _ = run_metropolis(
         N,
         max_moves,
         beta,
-        "annealing_quantized",
-        {"iterations_step": 1000, "annealing_factor": 2},
+        mode="solve",
+        beta_strategy="fixed",
+        strategy_params={"iterations_step": 1000, "annealing_factor": 2},
     )
 
     if iters == -1:
