@@ -2,12 +2,6 @@ import numpy as np
 import math as m
 from board import Board
 
-def simplest(
-    b="fixed", a=True
-):
-    return -1, -2, -3, -4
-
-
 def run_metropolis_w_sampling(
     N, max_moves, beta_init, sample_size, beta_strategy="fixed", strategy_params=None, debug=True
 ):
