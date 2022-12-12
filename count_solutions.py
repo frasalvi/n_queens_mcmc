@@ -1,8 +1,10 @@
 import os
 import pickle
-import math
 import numpy as np
+import mpmath as mp
 from metropolis import run_metropolis
+
+mp.mp.dps = 300
 
 
 def count_solutions(N, convergence_moves, counting_moves, beta_grid):
@@ -33,28 +35,52 @@ def count_solutions(N, convergence_moves, counting_moves, beta_grid):
         ratio = (
             sum(
                 [
-                    count * math.exp(-delta_beta * conflict)
+                    count * mp.exp(-delta_beta * conflict)
                     for conflict, count in conflict_dict.items()
                 ]
             )
             / counting_moves
         )
-        ratio_sum += math.log(ratio)
+        ratio_sum += mp.log(ratio)
 
-        print(f"beta {beta_t}, ratio {ratio}")
+        with mp.workdps(4):
+            print(f"beta {beta_t}, ratio {ratio}")
 
-    Z0 = math.factorial(N)
-    Z = Z0 * math.exp(ratio_sum)
+    with mp.workdps(4):
+        print(f"ratio_sum = {ratio_sum}")
+    Z0 = mp.factorial(N)
+    Z = Z0 * mp.exp(ratio_sum)
     return Z
 
 
 if __name__ == "__main__":
     np.random.seed(42)
-    N = 20
-    convergence_moves = 200000
-    counting_moves = 800000
-    # beta_grid = [0.00001, 0.0001, 0.01, 0.05, 0.1, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20]
-    beta_grid = [0.0001, 0.01, 0.1, 0.5, 1, 3, 5, 10, 20]
+    N = 1000
+    convergence_moves = 200_000
+    counting_moves = 800_000
+    beta_grid = [
+        0.0001,
+        0.01,
+        0.1,
+        0.25,
+        0.375,
+        0.5,
+        0.625,
+        0.75,
+        1,
+        1.25,
+        1.5,
+        1.75,
+        2,
+        2.5,
+        3,
+        4,
+        5,
+        10,
+        20,
+    ]
 
     Z = count_solutions(N, convergence_moves, counting_moves, beta_grid)
-    print(f"Z = {Z:e}")
+
+    with mp.workdps(4):
+        print(f"Z = {Z}")
