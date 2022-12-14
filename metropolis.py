@@ -23,7 +23,6 @@ def run_metropolis(
     beta = beta_init
     accepted_moves = 0
     conflict_dict = defaultdict(int)
-    solved = False
 
     #  If the number of conflict is already 0, we're done.
     if mode=="solve" and board.nb_conflicts == 0:
@@ -48,9 +47,7 @@ def run_metropolis(
 
         # Choose a random swap and compute the energy difference
         qn1 = np.random.randint(N)
-        qn2 = qn1
-        while qn2 == qn1:
-            qn2 = np.random.randint(N)
+        qn2 = np.random.randint(N)
         de, _, _ = board.var_move(qn1, qn2)
 
         # Metropolis algorithm: If de <= 0, accept the move.
@@ -67,10 +64,9 @@ def run_metropolis(
             if mode == "solve" and board.nb_conflicts == 0:
                 if debug and board.N <= 100:
                     board.print_board()
-                solved = True
                 break
         # If we're in count mode, we keep track of the number of conflicts
         # for each move.
         if mode == "count" and j >= count_params["convergence_moves"]:
             conflict_dict[board.nb_conflicts] += 1
-    return solved, board.queens, dict(conflict_dict)
+    return j, board.queens, dict(conflict_dict)

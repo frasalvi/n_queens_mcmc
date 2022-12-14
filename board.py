@@ -80,7 +80,7 @@ class Board:
 
     def var_move(self, i, j):
         if i == j:
-            return 0
+            return 0, self.increasing_diag_counter, self.decreasing_diag_counter
         new_queen1 = Queen(self.queens[i].x, self.queens[j].y)
         new_queen2 = Queen(self.queens[j].x, self.queens[i].y)
 
