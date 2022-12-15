@@ -13,17 +13,21 @@ from metropolis import run_metropolis
 mp.mp.dps = 300
 
 
-def get_ratios(N, convergence_moves, counting_moves, beta_grid, debug=True):
+def get_ratios(N, convergence_moves, counting_moves, beta_grid, debug=True, iter=None):
     max_moves = convergence_moves + counting_moves
-    ratio_sum = 0
     ratio_arr = []
 
     for i in range(len(beta_grid) - 2, -1, -1):
         beta_t1 = beta_grid[i + 1]
         beta_t = beta_grid[i]
 
-        if os.path.exists(f"data/{N}_beta{beta_t}.pkl"):
-            with open(f"data/{N}_beta{beta_t}.pkl", "rb") as f:
+        path = f"data/{N}_beta{beta_t}"
+        if iter:
+            path += f"_{iter}"
+        path += ".pkl"
+
+        if os.path.exists(path):
+            with open(path, "rb") as f:
                 conflict_dict = pickle.load(f)
         else:
             _, _, conflict_dict = run_metropolis(
@@ -34,9 +38,9 @@ def get_ratios(N, convergence_moves, counting_moves, beta_grid, debug=True):
                 beta_strategy="fixed",
                 strategy_params=None,
                 count_params={"convergence_moves": convergence_moves},
-                debug=debug
+                debug=debug,
             )
-            with open(f"data/{N}_beta{beta_t}.pkl", "wb") as f:
+            with open(path, "wb") as f:
                 pickle.dump(conflict_dict, f)
 
         delta_beta = beta_t1 - beta_t
@@ -49,31 +53,30 @@ def get_ratios(N, convergence_moves, counting_moves, beta_grid, debug=True):
             )
             / counting_moves
         )
-        # ratio_sum += mp.log(ratio)
         ratio_arr.append(mp.mpmathify(ratio))
 
         with mp.workdps(4):
             debug and print(f"beta {beta_t}, ratio {ratio}")
 
-    # with mp.workdps(4):
-    #     debug and print(f"ratio_sum = {ratio_sum}")
-    # Z0 = mp.factorial(N)
-    # Z = Z0 * mp.exp(ratio_sum)
-    # return Z
     return ratio_arr
 
 
-def estimate_zetab(N, convergence_moves, counting_moves, beta_grid, debug=True):
-    ratio_arr = get_ratios(N, convergence_moves, counting_moves, beta_grid, debug)
+def estimate_zetab(
+    N, convergence_moves, counting_moves, beta_grid, debug=True, iter=None
+):
+    ratio_arr = get_ratios(N, convergence_moves, counting_moves, beta_grid, debug, iter)
     T = len(ratio_arr)
-    Z_arr = np.empty(T+1, dtype=object)
+    Z_arr = np.empty(T + 1, dtype=object)
     Z_arr[0] = mp.factorial(N)
-    for i in range(1, T+1):
-        Z_arr[i] = Z_arr[i-1] * ratio_arr[T-i]
+    for i in range(1, T + 1):
+        Z_arr[i] = Z_arr[i - 1] * ratio_arr[T - i]
     return Z_arr
 
-def count_solutions(N, convergence_moves, counting_moves, beta_grid, debug=True):
-    Z_arr = estimate_zetab(N, convergence_moves, counting_moves, beta_grid, debug)
+
+def count_solutions(
+    N, convergence_moves, counting_moves, beta_grid, debug=True, iter=None
+):
+    Z_arr = estimate_zetab(N, convergence_moves, counting_moves, beta_grid, debug, iter)
     Z = Z_arr[-1]
     return Z
 
