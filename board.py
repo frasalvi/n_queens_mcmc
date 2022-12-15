@@ -13,11 +13,11 @@ class Queen:
 
     def move(self, y):
         self.y = y
-        self.incresing_diag = self.x + self.y
+        self.incraesing_diag = self.x + self.y
         self.decreasing_diag = self.x - self.y
 
     def get_diagonals(self):
-        return self.incresing_diag, self.decreasing_diag
+        return self.incraesing_diag, self.decreasing_diag
 
     def __repr__(self):
         return f"Queen({self.x}, {self.y})"
