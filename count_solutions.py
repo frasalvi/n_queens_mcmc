@@ -89,7 +89,7 @@ if __name__ == "__main__":
     convergence_moves = 200_000
     counting_moves = 800_000
 
-    if N <= 20:
+    if N < 20:
         beta_grid = [0, 0.01, 1, 3, 5, 10]
     else:
         beta_grid = [
