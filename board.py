@@ -22,6 +22,9 @@ class Queen:
     def __repr__(self):
         return f"Queen({self.x}, {self.y})"
 
+    def __iter__(self):
+        return iter([self.x, self.y])
+
 
 class Board:
     def __init__(self, N):
