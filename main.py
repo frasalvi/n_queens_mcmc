@@ -21,10 +21,10 @@ if __name__ == "__main__":
     iters, queens, _ = run_metropolis(
         N,
         max_moves,
-        beta_init=20,
+        beta_init=0.01,
         mode="solve",
-        beta_strategy="fixed",
-        strategy_params={"iterations_step": 1000, "annealing_factor": 2},
+        beta_strategy="annealing_quantized",
+        strategy_params={"iterations_step": 10000, "annealing_factor": 2},
     )
 
     if iters == max_moves-1:
@@ -32,9 +32,9 @@ if __name__ == "__main__":
     else:
         print(f"Solution found in {iters} moves, {time() - t:e} seconds.")
 
-        if DUMP:
-            filename = f"data/solution_{N}.csv"
-            with open(filename, 'w') as csv_file:
-                wr = csv.writer(csv_file, delimiter=',', lineterminator='\n')
-                for queen in queens:
-                    wr.writerow(list(queen))
+    if DUMP:
+        filename = f"data/solution_{N}.csv"
+        with open(filename, 'w') as csv_file:
+            wr = csv.writer(csv_file, delimiter=',', lineterminator='\n')
+            for queen in queens:
+                wr.writerow(list(queen))
