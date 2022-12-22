@@ -8,7 +8,7 @@ import csv
 from time import time
 from metropolis import run_metropolis
 
-DUMP = True
+DUMP = False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
