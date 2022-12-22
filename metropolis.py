@@ -2,7 +2,6 @@ import numpy as np
 import math as m
 from collections import defaultdict
 from board import Board
-import csv
 
 
 def run_metropolis(
@@ -31,20 +30,12 @@ def run_metropolis(
         return 0, board.queens, dict(conflict_dict)
     
     for j in range(max_moves):
-
-        if j % 100_000 == 0:
-            filename = f"data/solution_{N}_{board.nb_conflicts}.csv"
-            with open(filename, 'w') as csv_file:
-                wr = csv.writer(csv_file, delimiter=',', lineterminator='\n')
-                for queen in board.queens:
-                    wr.writerow(list(queen))
         # Update beta according to the strategy
         if beta_strategy == "fixed":
             pass
         elif beta_strategy == "annealing_quantized":
             if j % strategy_params["iterations_step"] == 0:
                 beta *= strategy_params["annealing_factor"]
-                beta = min(beta, strategy_params["annealing_max"])
         else:
             raise NotImplementedError("beta_strategy not implemented.")
 

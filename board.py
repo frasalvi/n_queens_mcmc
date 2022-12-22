@@ -7,21 +7,14 @@ def choose2(n):
 
 
 class Queen:
-    def __init__(self, x, y, N):
+    def __init__(self, x, y):
         self.x = x
-        self.N = N
         self.move(y)
 
     def move(self, y):
         self.y = y
         self.incraesing_diag = self.x + self.y
-
-        # Torus
-        if self.incraesing_diag >= self.N:
-            self.incraesing_diag -= self.N
         self.decreasing_diag = self.x - self.y
-        if self.decreasing_diag < 0:
-            self.decreasing_diag += self.N
 
     def get_diagonals(self):
         return self.incraesing_diag, self.decreasing_diag
@@ -58,7 +51,7 @@ class Board:
     def init_board(self):
         P = np.random.permutation(self.N)
         for x, y in enumerate(P):
-            self.queens.append(Queen(x, y, self.N))
+            self.queens.append(Queen(x, y))
         self.count_conflicts()
 
     def print_board(self):
@@ -91,8 +84,8 @@ class Board:
     def var_move(self, i, j):
         if i == j:
             return 0, self.increasing_diag_counter, self.decreasing_diag_counter
-        new_queen1 = Queen(self.queens[i].x, self.queens[j].y, self.N)
-        new_queen2 = Queen(self.queens[j].x, self.queens[i].y, self.N)
+        new_queen1 = Queen(self.queens[i].x, self.queens[j].y)
+        new_queen2 = Queen(self.queens[j].x, self.queens[i].y)
 
         var = 0
         tmp_increasing_counter, tmp_decreasing_counter = (
