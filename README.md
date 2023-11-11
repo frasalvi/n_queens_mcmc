@@ -1,4 +1,4 @@
-# Solving the $N$-queens problems via the Metropolis algorithm
+# Solving the N-queens problems via the Metropolis algorithm
 
 
 The N-queens problem demands a way to place $N$ queens on an $N$ × $N$ chessboard so that no two queens attack each other (lie on the same row, column, or diagonal).
